@@ -1,4 +1,4 @@
-var song, fft, fftLin;
+var bgsong, fft, fftLin;
 var spectrumScale = 1;
 var linNum = 40;
 var r = 0;
@@ -6,16 +6,16 @@ var x = [];
 var y = [];
 
 function preload() {
-  song = loadSound("bgsound.mp3");
+  bgsong = loadSound("bgsound.mp3");
 }
 
 function setup() {
-  createCanvas(600, 400);
+  createCanvas(windowWidth,windowHeight);
   background(0);
   noStroke();
   fft = new p5.FFT();
-  song.setVolume(1);
-  song.loop();
+  bgsong.setVolume(1);
+  bgsong.loop();
   fft.analyze();
   fftLin = fft.linAverages(linNum);
   for (var i = 0; i < fftLin.length; i++) {
@@ -29,9 +29,18 @@ function setup() {
   }
 }
 
+function mousePressed() {
+  if (bgsong.isPlaying()) {
+    bgsong.pause();
+  } else {
+    bgsong.play();
+    background('#b4eb34');
+  }
+}
+
 function draw() {
   fft.analyze();
-  
+
   fftLin = fft.linAverages(linNum);
   noStroke();
   fill(0, 0, 0, 20);
@@ -51,7 +60,9 @@ function draw() {
     } else {
       noFill();
       ellipse(x[i], y[i], fftLin[i] * spectrumScale, fftLin[i] * spectrumScale);
+      rect(x[i], y[i], width, height);
+
     }
   }
-  r += 0.3;
+  r += .51;
 }
